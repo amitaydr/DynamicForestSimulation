@@ -1,5 +1,7 @@
 package dynamicGraph;
 
+import simulation.Main;
+
 public class Vertex {
 	public static int C = 1;
 	private int id;
@@ -135,6 +137,15 @@ public class Vertex {
 		}
 		
 		return neighbors[index];
+	}
+
+
+
+	public void printNode() {
+		for(int i=0; i<nextEmpty;i++){
+			Main.log("("+this.id+","+neighbors[i].id+") ");
+		}
+		
 	}
 	
 

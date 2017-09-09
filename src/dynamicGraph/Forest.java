@@ -1,5 +1,9 @@
 package dynamicGraph;
 
+import java.io.IOException;
+
+import simulation.Main;
+
 public class Forest {
 	private Vertex[] nodes;
 	private int numNodes;
@@ -57,19 +61,32 @@ public class Forest {
 			 i = (int) (Math.random()*numNodes);
 			 j = (int) (Math.random()*numNodes);
 		}
-		System.out.print("add (" + i + ","+ j + ") took:");
-		System.out.println(addEdge(i,j)+" iterations");
-		
+		int itt = addEdge(i,j);
+//		if(itt > 3*numNodes/4){
+//			System.out.println("******************************bingo***************************** " + itt +" iterations");
+//		}
+
+		Main.log("add (" + i + ","+ j + ") took:"+itt +" iterations\n");
+
 	}
 	
 	public void removeSomeEdge(){
 		int i = (int) (Math.random()*numNodes);
 		if (nodes[i].getNextEmpty()!=0){
-			System.out.print("removing (" + i);
-			System.out.println("," + removeEdge(i) + ")");
+			int j = removeEdge(i);
+			Main.log("removing (" + i +"," + j + ")\n");
+
 		}
 		else{
 			removeSomeEdge();
 		}
+	}
+
+	public void printGraph() {
+		for(int i=0; i<numNodes; i++){
+			nodes[i].printNode();
+		}
+		Main.log("\n");;
+		
 	}
 }
