@@ -1,13 +1,12 @@
 package dynamicGraph;
 
-import java.io.IOException;
-
 import simulation.Main;
 
 public class Forest {
 	private Vertex[] nodes;
 	private int numNodes;
 	private int numEdges;
+	private int countSuc;
 	
 	public Forest(int numNodes){
 		this.numNodes=numNodes;
@@ -16,12 +15,10 @@ public class Forest {
 			nodes[i]=new Vertex(i,numNodes);
 		}
 		this.numEdges = 0;
+		this.countSuc = 0;
 	}
 	
 	public int addEdge(int i, int j){
-//		if(numEdges == numNodes - 1){
-//			throw new RuntimeException("Trying to add an edge to a graph with n-1 edges");
-//		}
 		if(nodes[j].getTreeManagerId() == nodes[i].getTreeManagerId()){
 			throw new RuntimeException("Trying to add an edge between 2 nodes in the same tree");
 		}
@@ -62,11 +59,17 @@ public class Forest {
 			 j = (int) (Math.random()*numNodes);
 		}
 		int itt = addEdge(i,j);
-//		if(itt > 3*numNodes/4){
-//			System.out.println("******************************bingo***************************** " + itt +" iterations");
-//		}
-
-		Main.log("add (" + i + ","+ j + ") took:"+itt +" iterations\n");
+		Main.log("+(" + i + ","+ j + ")"+itt +"\n");
+		if(itt == numNodes-2){
+			countSuc++;
+			if(countSuc == numNodes-2){
+				Main.log("bingo\n");
+				System.out.println("bingo");
+			}
+		}
+		else{
+			countSuc = 0;
+		}
 
 	}
 	
@@ -74,7 +77,7 @@ public class Forest {
 		int i = (int) (Math.random()*numNodes);
 		if (nodes[i].getNextEmpty()!=0){
 			int j = removeEdge(i);
-			Main.log("removing (" + i +"," + j + ")\n");
+			Main.log("-(" + i +"," + j + ")\n");
 
 		}
 		else{
