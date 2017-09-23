@@ -8,11 +8,11 @@ public class Forest {
 	private int numEdges;
 	private int countSuc;
 	
-	public Forest(int numNodes){
+	public Forest(int numNodes, int c){
 		this.numNodes=numNodes;
 		this.nodes = new Vertex[numNodes];
 		for(int i=0; i<numNodes; i++){
-			nodes[i]=new Vertex(i,numNodes);
+			nodes[i]=new Vertex(i,numNodes,c);
 		}
 		this.numEdges = 0;
 		this.countSuc = 0;
@@ -63,8 +63,9 @@ public class Forest {
 		if(itt == numNodes-2){
 			countSuc++;
 			if(countSuc == numNodes-2){
-				Main.log("bingo\n");
+//				Main.log("bingo\n");
 				System.out.println("bingo");
+				Main.printSmallLog();
 			}
 		}
 		else{

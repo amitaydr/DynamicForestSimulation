@@ -3,8 +3,8 @@ package dynamicGraph;
 import simulation.Main;
 
 public class Vertex {
-	public static int C = 1;
 	private int id;
+	private int C;
 	private int treeManagerId;
 	private Vertex[] neighbors;
 	private Vertex[] incomingNeighbors;
@@ -14,8 +14,9 @@ public class Vertex {
 
 
 
-	public Vertex(int id, int graphSize){
-		this.neighbors = new Vertex[C];
+	public Vertex(int id, int graphSize, int c){
+		this.C = c;
+		this.neighbors = new Vertex[c];
 		this.id = id;	
 		this.setTreeManagerId(id);
 		this.nextEmpty = 0;

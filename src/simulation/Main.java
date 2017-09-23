@@ -5,16 +5,25 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.LinkedList;
 
 import dynamicGraph.Forest;
 
 public class Main {
+	private static int size = 6;
+	private static int C = 2;
+	private static int printFreq = 10;
+	
+	private static LinkedList<String> smallLogger;
+	private static int smallLoggerSize;
 	static FileWriter fw = null;
 	static BufferedWriter bw = null;
 	private static String logdir = "C:\\Users\\amitaydr\\Desktop\\ProjectRepo\\DynamicForestSimulation\\logs\\";
-	private static boolean doLog = true;
+	private static boolean doLog = false;
+
 	
 	private static void initLog(){	
+		
 		if (doLog) {
 			String fileName = logdir
 					+ LocalDateTime.now().format(
@@ -27,9 +36,14 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
+		else{
+			smallLogger = new LinkedList<String>(); 
+			smallLoggerSize = (1+(C/printFreq))*printFreq*2;
+		}
 	}
 	
 	private static void closeLogger() {
+		System.out.println("closing log");
 		if (doLog) {
 			try {
 				if (bw != null) {
@@ -52,19 +66,33 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
+		else{
+			if(smallLogger.size()==smallLoggerSize){
+				smallLogger.remove();
+			}
+			smallLogger.add(s);
+		}
+	}
+	
+	public synchronized static void printSmallLog(){
+		if(!doLog){
+			System.out.println("Printing small log");
+			for(String s : smallLogger){
+				System.out.print(s);
+			}
+		}
 	}
 	
 	public static void main(String[] args) {
 		System.out.println("starting");
 		initLog();
-		int size = 7;
-		int iterations = 1000000000;
-		Forest f = new Forest(size);
+		long iterations = 1999999999;
+		Forest f = new Forest(size,C);
 		for (int i = 0; i<size-1;i++){
 			f.addSomeEdge();
 		}
 		for (int i = 0; i<iterations; i++){
-			if(i%10 == 0){
+			if(i%printFreq == 0){
 				f.printGraph();
 			}
 			f.removeSomeEdge();
