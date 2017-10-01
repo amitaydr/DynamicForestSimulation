@@ -10,9 +10,11 @@ import java.util.LinkedList;
 import dynamicGraph.Forest;
 
 public class Main {
-	private static int size = 6;
+	private static int size = 5;
 	private static int C = 2;
 	private static int printFreq = 10;
+	private static long  iterations = 1000000000L;
+
 	
 	private static LinkedList<String> smallLogger;
 	private static int smallLoggerSize;
@@ -86,7 +88,6 @@ public class Main {
 	public static void main(String[] args) {
 		System.out.println("starting");
 		initLog();
-		long iterations = 1999999999;
 		Forest f = new Forest(size,C);
 		for (int i = 0; i<size-1;i++){
 			f.addSomeEdge();

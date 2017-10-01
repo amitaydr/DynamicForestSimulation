@@ -1,12 +1,16 @@
 package dynamicGraph;
 
+import java.util.LinkedList;
+
 import simulation.Main;
 
 public class Forest {
 	private Vertex[] nodes;
+	private LinkedList<Vertex> fullNodes;
 	private int numNodes;
 	private int numEdges;
 	private int countSuc;
+	private int c;
 	
 	public Forest(int numNodes, int c){
 		this.numNodes=numNodes;
@@ -14,8 +18,10 @@ public class Forest {
 		for(int i=0; i<numNodes; i++){
 			nodes[i]=new Vertex(i,numNodes,c);
 		}
+		this.fullNodes = new LinkedList<Vertex>();
 		this.numEdges = 0;
 		this.countSuc = 0;
+		this.c = c;
 	}
 	
 	public int addEdge(int i, int j){
@@ -23,6 +29,9 @@ public class Forest {
 			throw new RuntimeException("Trying to add an edge between 2 nodes in the same tree");
 		}
 		int numFlips = nodes[i].AddNeighbor(nodes[j]);
+		if(nodes[i].getNextEmpty()==c && !fullNodes.contains(nodes[i])){
+			fullNodes.add(nodes[i]);
+		}
 		nodes[j].UpdateTreeManager(nodes[i].getTreeManagerId());
 		numEdges++;
 		return numFlips;
@@ -38,7 +47,9 @@ public class Forest {
 		if(iNextEmpty == 0){
 			throw new RuntimeException("Trying to remove an edge from a node with no neighbors");
 		}
-		
+		else if(iNextEmpty == c){
+			fullNodes.remove(vi);
+		}
 		int indexOfNeighborToRemove = (int) (Math.random()*iNextEmpty);
 		Vertex vj = vi.getNeighbor(indexOfNeighborToRemove);
 		vi.removeNeighbor(indexOfNeighborToRemove);
@@ -53,6 +64,9 @@ public class Forest {
 			throw new RuntimeException("cannot ass an edge, graph is already connected");
 		}
 		int i = (int) (Math.random()*numNodes);
+		if(!fullNodes.isEmpty()){
+			i = fullNodes.get((int) (Math.random()*fullNodes.size())).getId();
+		}
 		int j = (int) (Math.random()*numNodes);
 		while(i==j || nodes[i].getTreeManagerId()==nodes[j].getTreeManagerId()){
 			 i = (int) (Math.random()*numNodes);
@@ -63,7 +77,7 @@ public class Forest {
 		if(itt == numNodes-2){
 			countSuc++;
 			if(countSuc == numNodes-2){
-//				Main.log("bingo\n");
+				Main.log("bingo\n");
 				System.out.println("bingo");
 				Main.printSmallLog();
 			}
