@@ -9,10 +9,14 @@ public class Forest {
 	private LinkedList<Vertex> fullNodes;
 	private int numNodes;
 	private int numEdges;
-	private int countSuc;
+//	private int countSuc;
 	private int c;
+	private int firstChunkCounter;
+	private int currentChunkScore;
+	private LinkedList<Integer> chunkFlipNums;
+	private int bestScoreYet;
 	
-	public Forest(int numNodes, int c){
+	public Forest(int numNodes, int c, int chunkSize){
 		this.numNodes=numNodes;
 		this.nodes = new Vertex[numNodes];
 		for(int i=0; i<numNodes; i++){
@@ -20,7 +24,11 @@ public class Forest {
 		}
 		this.fullNodes = new LinkedList<Vertex>();
 		this.numEdges = 0;
-		this.countSuc = 0;
+//		this.countSuc = 0;
+		this.firstChunkCounter = chunkSize;
+		this.chunkFlipNums = new LinkedList<Integer>();
+		this.currentChunkScore = 0;
+		this.bestScoreYet = -1;
 		this.c = c;
 	}
 	
@@ -34,6 +42,14 @@ public class Forest {
 		}
 		nodes[j].UpdateTreeManager(nodes[i].getTreeManagerId());
 		numEdges++;
+		
+		chunkFlipNums.add(numFlips);
+		currentChunkScore += numFlips;
+		if(firstChunkCounter==0){
+			currentChunkScore -= chunkFlipNums.remove();
+		} else {
+			firstChunkCounter--;
+		}
 		return numFlips;
 	}
 	/***
@@ -74,17 +90,21 @@ public class Forest {
 		}
 		int itt = addEdge(i,j);
 		Main.log("+(" + i + ","+ j + ")"+itt +"\n");
-		if(itt == numNodes-2){
-			countSuc++;
-			if(countSuc == numNodes-2){
-				Main.log("bingo\n");
-				System.out.println("bingo");
-				Main.printSmallLog();
-			}
+		if(currentChunkScore > bestScoreYet){
+			bestScoreYet = currentChunkScore;
+			Main.saveBestChunkLog(bestScoreYet);
 		}
-		else{
-			countSuc = 0;
-		}
+//		if(itt == numNodes-2){
+//			countSuc++;
+//			if(countSuc == numNodes-2){
+//				Main.log("bingo\n");
+//				System.out.println("bingo");
+//				Main.printSmallLog();
+//			}
+//		}
+//		else{
+//			countSuc = 0;
+//		}
 
 	}
 	
@@ -101,10 +121,12 @@ public class Forest {
 	}
 
 	public void printGraph() {
+		StringBuilder acc = new StringBuilder();
 		for(int i=0; i<numNodes; i++){
-			nodes[i].printNode();
+			acc.append(nodes[i].printNode());
 		}
-		Main.log("\n");;
+		acc.append('\n');
+		Main.log(acc.toString());;
 		
 	}
 }

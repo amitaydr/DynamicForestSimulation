@@ -142,11 +142,12 @@ public class Vertex {
 
 
 
-	public void printNode() {
+	public String printNode() {
+		StringBuilder s = new StringBuilder();
 		for(int i=0; i<nextEmpty;i++){
-			Main.log("("+this.id+","+neighbors[i].id+") ");
+			s.append("("+this.id+","+neighbors[i].id+") ");
 		}
-		
+		return s.toString();
 	}
 	
 

@@ -12,16 +12,18 @@ import dynamicGraph.Forest;
 public class Main {
 	private static int size = 5;
 	private static int C = 2;
-	private static int printFreq = 10;
-	private static long  iterations = 1000000000L;
+	private static int chunkSize = 10;
+	private static long  iterations = 100000L;
 
 	
 	private static LinkedList<String> smallLogger;
+	private static LinkedList<String> bestChunkLog;
 	private static int smallLoggerSize;
 	static FileWriter fw = null;
 	static BufferedWriter bw = null;
 	private static String logdir = "C:\\Users\\amitaydr\\Desktop\\ProjectRepo\\DynamicForestSimulation\\logs\\";
 	private static boolean doLog = false;
+	private static int bestScore;
 
 	
 	private static void initLog(){	
@@ -40,7 +42,7 @@ public class Main {
 		}
 		else{
 			smallLogger = new LinkedList<String>(); 
-			smallLoggerSize = (1+(C/printFreq))*printFreq*2;
+			smallLoggerSize = chunkSize*4;
 		}
 	}
 	
@@ -85,15 +87,31 @@ public class Main {
 		}
 	}
 	
+	public synchronized static void printBestLog(){
+		if(!doLog){
+			System.out.println("Printing best chunk log");
+			for(String s : bestChunkLog){
+				System.out.print(s);
+			}
+			System.out.println("total flips required in chunk- " + bestScore );
+		}
+	}
+	
+	public static void saveBestChunkLog(int score){
+		bestChunkLog = new LinkedList<String>(smallLogger);
+		bestScore = score;
+	}
+	
 	public static void main(String[] args) {
 		System.out.println("starting");
 		initLog();
-		Forest f = new Forest(size,C);
+		bestScore = 0;
+		Forest f = new Forest(size,C,chunkSize);
 		for (int i = 0; i<size-1;i++){
 			f.addSomeEdge();
 		}
 		for (int i = 0; i<iterations; i++){
-			if(i%printFreq == 0){
+			if(i%chunkSize == 0){
 				f.printGraph();
 			}
 			f.removeSomeEdge();
@@ -101,6 +119,7 @@ public class Main {
 		}
 
 		closeLogger();
+		printBestLog();
 		System.out.println("done!");
 
 		 
