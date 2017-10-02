@@ -13,7 +13,7 @@ public class Main {
 	private static int size = 5;
 	private static int C = 2;
 	private static int chunkSize = 10;
-	private static long  iterations = 100000L;
+	private static long  iterations = 1000000L;
 
 	
 	private static LinkedList<String> smallLogger;
@@ -22,13 +22,13 @@ public class Main {
 	static FileWriter fw = null;
 	static BufferedWriter bw = null;
 	private static String logdir = "C:\\Users\\amitaydr\\Desktop\\ProjectRepo\\DynamicForestSimulation\\logs\\";
-	private static boolean doLog = false;
+	private static boolean doLogAll = false;
 	private static int bestScore;
 
 	
 	private static void initLog(){	
 		
-		if (doLog) {
+		if (doLogAll) {
 			String fileName = logdir
 					+ LocalDateTime.now().format(
 							DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm"))
@@ -47,8 +47,7 @@ public class Main {
 	}
 	
 	private static void closeLogger() {
-		System.out.println("closing log");
-		if (doLog) {
+		if (doLogAll) {
 			try {
 				if (bw != null) {
 					bw.close();
@@ -63,7 +62,7 @@ public class Main {
 	}
 	
 	public static void log(String s){
-		if(doLog){
+		if(doLogAll){
 			try {
 				Main.bw.append(s);
 			} catch (IOException e) {
@@ -79,7 +78,7 @@ public class Main {
 	}
 	
 	public synchronized static void printSmallLog(){
-		if(!doLog){
+		if(!doLogAll){
 			System.out.println("Printing small log");
 			for(String s : smallLogger){
 				System.out.print(s);
@@ -88,7 +87,7 @@ public class Main {
 	}
 	
 	public synchronized static void printBestLog(){
-		if(!doLog){
+		if(!doLogAll){
 			System.out.println("Printing best chunk log");
 			for(String s : bestChunkLog){
 				System.out.print(s);
@@ -97,13 +96,36 @@ public class Main {
 		}
 	}
 	
-	public static void saveBestChunkLog(int score){
-		bestChunkLog = new LinkedList<String>(smallLogger);
-		bestScore = score;
+	public static void saveToBestChunkLog(int score){
+		if(!doLogAll){
+			bestChunkLog = new LinkedList<String>(smallLogger);
+			bestScore = score;
+		}
+	}
+	
+	public static void saveBestChunkLogToFile(){
+		String fileName = logdir
+				+ "bestChunk" + LocalDateTime.now().format(
+						DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm"))
+				+ ".log";
+		try {
+			fw = new FileWriter(fileName);
+			bw = new BufferedWriter(fw);
+			bw.append("N="+size+" C="+C+" ChunkSize="+chunkSize+" iterations="+iterations+"\n");
+			for(String s : bestChunkLog){
+				bw.append(s);
+			}
+			bw.append("total flips required in chunk- " + bestScore );
+			bw.close();
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
 	}
 	
 	public static void main(String[] args) {
-		System.out.println("starting");
+		System.out.println("N="+size+" C="+C+" ChunkSize="+chunkSize+" iterations="+iterations);
 		initLog();
 		bestScore = 0;
 		Forest f = new Forest(size,C,chunkSize);
@@ -119,7 +141,11 @@ public class Main {
 		}
 
 		closeLogger();
-		printBestLog();
+		if (!doLogAll){
+			printBestLog();
+			saveBestChunkLogToFile();
+		}
+		
 		System.out.println("done!");
 
 		 

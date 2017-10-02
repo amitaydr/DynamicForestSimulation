@@ -92,7 +92,7 @@ public class Forest {
 		Main.log("+(" + i + ","+ j + ")"+itt +"\n");
 		if(currentChunkScore > bestScoreYet){
 			bestScoreYet = currentChunkScore;
-			Main.saveBestChunkLog(bestScoreYet);
+			Main.saveToBestChunkLog(bestScoreYet);
 		}
 //		if(itt == numNodes-2){
 //			countSuc++;
