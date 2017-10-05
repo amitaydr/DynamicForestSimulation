@@ -1,7 +1,5 @@
 package dynamicGraph;
 
-import simulation.Main;
-
 public class Vertex {
 	private int id;
 	private int C;

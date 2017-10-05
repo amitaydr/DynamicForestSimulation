@@ -15,6 +15,8 @@ public class Forest {
 	private int currentChunkScore;
 	private LinkedList<Integer> chunkFlipNums;
 	private int bestScoreYet;
+	private int lastRemovedI;
+	private int lastRemovedJ;
 	
 	public Forest(int numNodes, int c, int chunkSize){
 		this.numNodes=numNodes;
@@ -30,6 +32,8 @@ public class Forest {
 		this.currentChunkScore = 0;
 		this.bestScoreYet = -1;
 		this.c = c;
+		this.lastRemovedI = -1;
+		this.lastRemovedJ = -1;
 	}
 	
 	public int addEdge(int i, int j){
@@ -69,6 +73,8 @@ public class Forest {
 		int indexOfNeighborToRemove = (int) (Math.random()*iNextEmpty);
 		Vertex vj = vi.getNeighbor(indexOfNeighborToRemove);
 		vi.removeNeighbor(indexOfNeighborToRemove);
+		lastRemovedI = vi.getId();
+		lastRemovedJ = vj.getId();
 		vj.UpdateTreeManager(vj.getId());
 		vi.UpdateTreeManager(vi.getId());
 		numEdges--;
@@ -84,7 +90,7 @@ public class Forest {
 			i = fullNodes.get((int) (Math.random()*fullNodes.size())).getId();
 		}
 		int j = (int) (Math.random()*numNodes);
-		while(i==j || nodes[i].getTreeManagerId()==nodes[j].getTreeManagerId()){
+		while(i==j || nodes[i].getTreeManagerId()==nodes[j].getTreeManagerId() || (i == lastRemovedI && j == lastRemovedJ)){
 			 i = (int) (Math.random()*numNodes);
 			 j = (int) (Math.random()*numNodes);
 		}

@@ -10,10 +10,10 @@ import java.util.LinkedList;
 import dynamicGraph.Forest;
 
 public class Main {
-	private static int size = 5;
+	private static int size = 10;
 	private static int C = 2;
 	private static int chunkSize = 10;
-	private static long  iterations = 1000000L;
+	private static long  iterations = 1000000000L;
 
 	
 	private static LinkedList<String> smallLogger;
