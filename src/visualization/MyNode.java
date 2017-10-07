@@ -29,6 +29,7 @@ public class MyNode {
 				return;
 			}
 		}
+		throw new RuntimeException("neighbor to remove not found");
 	}
 	
 	public void RemoveNeighborIdx(int idx, boolean doPause){
@@ -59,8 +60,8 @@ public class MyNode {
 				g.addAttribute("ui.stylesheet", "edge#\"" + this.myIdx+"-" + curr.getIdx() + "\" { fill-color: red; }");
 				pause();
 				curr.AddNeighbor(this);
-				RemoveNeighborIdx(i,false);
-
+				g.addAttribute("ui.stylesheet", "edge#\"" + this.myIdx+"-" + curr.getIdx() + "\" { fill-color: black; }");
+				RemoveNeighbor(curr, false);
 			}
 			neighbors[nextEmptySlot] = nei;
 			pause();

@@ -11,10 +11,10 @@ import visualization.Plotter;
 import dynamicGraph.Forest;
 
 public class Main {
-	private static int size = 20;
+	private static int size = 10;
 	private static int C = 2;
-	private static int chunkSize = 20;
-	private static long  iterations = 1000000000L;
+	private static int chunkSize = 10;
+	private static long  iterations = 1000L;
 
 	
 	private static LinkedList<String> smallLogger;
@@ -149,7 +149,7 @@ public class Main {
 		
 		System.out.println("done!");
 
-//		 Plotter.plot();
+		 Plotter.plot(bestChunkLog, size, C);
 	}
 
 
