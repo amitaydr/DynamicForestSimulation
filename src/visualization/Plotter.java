@@ -9,7 +9,7 @@ import org.graphstream.ui.view.Viewer;
 
 public class Plotter {
 
-	private static int minLengthForGraphPrint = 12;
+//	private static int minLengthForGraphPrint = 12;
 	static Graph g;
 	static MyNode[] myNodes;
 
@@ -45,7 +45,7 @@ public class Plotter {
 		}
 		
 		String currLog = logList.remove();
-		while(!logList.isEmpty() && currLog.length() < minLengthForGraphPrint ){
+		while(!logList.isEmpty() && !currLog.startsWith("=")){
 			currLog = logList.remove();
 		}
 		initGraph(currLog);

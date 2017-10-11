@@ -1,5 +1,6 @@
 package dynamicGraph;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 import simulation.Main;
@@ -9,31 +10,32 @@ public class Forest {
 	private LinkedList<Vertex> fullNodes;
 	private int numNodes;
 	private int numEdges;
-//	private int countSuc;
 	private int c;
 	private int firstChunkCounter;
 	private int currentChunkScore;
 	private LinkedList<Integer> chunkFlipNums;
 	private int bestScoreYet;
-	private int lastRemovedI;
-	private int lastRemovedJ;
+//	private int lastRemovedI;
+//	private int lastRemovedJ;
+	private ArrayList<Integer> permutation;
 	
 	public Forest(int numNodes, int c, int chunkSize){
 		this.numNodes=numNodes;
 		this.nodes = new Vertex[numNodes];
+		this.permutation = new ArrayList<Integer>();
 		for(int i=0; i<numNodes; i++){
 			nodes[i]=new Vertex(i,numNodes,c);
+			permutation.add(i);
 		}
 		this.fullNodes = new LinkedList<Vertex>();
 		this.numEdges = 0;
-//		this.countSuc = 0;
 		this.firstChunkCounter = chunkSize;
 		this.chunkFlipNums = new LinkedList<Integer>();
 		this.currentChunkScore = 0;
 		this.bestScoreYet = -1;
 		this.c = c;
-		this.lastRemovedI = -1;
-		this.lastRemovedJ = -1;
+//		this.lastRemovedI = -1;
+//		this.lastRemovedJ = -1;
 	}
 	
 	public int addEdge(int i, int j){
@@ -73,8 +75,8 @@ public class Forest {
 		int indexOfNeighborToRemove = (int) (Math.random()*iNextEmpty);
 		Vertex vj = vi.getNeighbor(indexOfNeighborToRemove);
 		vi.removeNeighbor(indexOfNeighborToRemove);
-		lastRemovedI = vi.getId();
-		lastRemovedJ = vj.getId();
+//		lastRemovedI = vi.getId();
+//		lastRemovedJ = vj.getId();
 		vj.UpdateTreeManager(vj.getId());
 		vi.UpdateTreeManager(vi.getId());
 		numEdges--;
@@ -86,13 +88,17 @@ public class Forest {
 			throw new RuntimeException("cannot ass an edge, graph is already connected");
 		}
 		int i = (int) (Math.random()*numNodes);
-		if(!fullNodes.isEmpty()){
-			i = fullNodes.get((int) (Math.random()*fullNodes.size())).getId();
-		}
-		int j = (int) (Math.random()*numNodes);
-		while(i==j || nodes[i].getTreeManagerId()==nodes[j].getTreeManagerId() || (i == lastRemovedI && j == lastRemovedJ)){
-			 i = (int) (Math.random()*numNodes);
-			 j = (int) (Math.random()*numNodes);
+		//this was in order to make it more likely for full nodes to be assigned
+//		if(!fullNodes.isEmpty()){
+//			i = fullNodes.get((int) (Math.random()*fullNodes.size())).getId();
+//		}
+		java.util.Collections.shuffle(permutation);
+		
+		int j = permutation.get(0);
+		int idx = 1;
+		while(i==j || nodes[i].getTreeManagerId()==nodes[j].getTreeManagerId()){
+			j = permutation.get(idx); 
+			idx++ ;
 		}
 		int itt = addEdge(i,j);
 		Main.log("+(" + i + ","+ j + ")"+itt +"\n");
@@ -100,39 +106,33 @@ public class Forest {
 			bestScoreYet = currentChunkScore;
 			Main.saveToBestChunkLog(bestScoreYet);
 		}
-//		if(itt == numNodes-2){
-//			countSuc++;
-//			if(countSuc == numNodes-2){
-//				Main.log("bingo\n");
-//				System.out.println("bingo");
-//				Main.printSmallLog();
-//			}
-//		}
-//		else{
-//			countSuc = 0;
-//		}
 
 	}
 	
 	public void removeSomeEdge(){
-		int i = (int) (Math.random()*numNodes);
-		if (nodes[i].getNextEmpty()!=0){
-			int j = removeEdge(i);
-			Main.log("-(" + i +"," + j + ")\n");
-
+		java.util.Collections.shuffle(permutation);
+		int i = permutation.get(0);
+		int idx = 1;
+		while(nodes[i].getNextEmpty()==0){
+			i = permutation.get(idx);
+			idx++;
 		}
-		else{
-			removeSomeEdge();
-		}
+		int j = removeEdge(i);
+		Main.log("-(" + i +"," + j + ")\n");
 	}
 
 	public void printGraph() {
 		StringBuilder acc = new StringBuilder();
+		acc.append("=");
 		for(int i=0; i<numNodes; i++){
 			acc.append(nodes[i].printNode());
 		}
 		acc.append('\n');
 		Main.log(acc.toString());;
 		
+	}
+	
+	public int getNumEdges(){
+		return numEdges;
 	}
 }

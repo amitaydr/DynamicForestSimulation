@@ -14,7 +14,7 @@ public class Main {
 	private static int size = 20;
 	private static int C = 2;
 	private static int chunkSize = 20;
-	private static long  iterations = 1000L;
+	private static long  iterations = 1000000000L;
 
 	
 	private static LinkedList<String> smallLogger;
@@ -24,6 +24,7 @@ public class Main {
 	static BufferedWriter bw = null;
 	private static String logdir = "C:\\Users\\amitaydr\\Desktop\\ProjectRepo\\DynamicForestSimulation\\logs\\";
 	private static boolean doLogAll = false;
+	private static boolean animateResult = false;
 	private static int bestScore;
 
 	
@@ -130,6 +131,7 @@ public class Main {
 		initLog();
 		bestScore = 0;
 		Forest f = new Forest(size,C,chunkSize);
+		int numEdges = 0;
 		for (int i = 0; i<size-1;i++){
 			f.addSomeEdge();
 		}
@@ -137,8 +139,21 @@ public class Main {
 			if(i%chunkSize == 0){
 				f.printGraph();
 			}
-			f.removeSomeEdge();
-			f.addSomeEdge();
+			numEdges = f.getNumEdges();
+			if (numEdges == 0){
+				f.addSomeEdge();
+			}
+			else if(numEdges == size -1){
+				f.removeSomeEdge();
+			}
+			else{
+				if (Math.random() > 0.5){
+					f.addSomeEdge();
+				}
+				else{
+					f.removeSomeEdge();
+				}
+			}
 		}
 
 		closeLogger();
@@ -149,7 +164,9 @@ public class Main {
 		
 		System.out.println("done!");
 
-		 Plotter.plot(bestChunkLog, size, C);
+		if(animateResult) {
+			Plotter.plot(bestChunkLog, size, C);
+		}
 	}
 
 
