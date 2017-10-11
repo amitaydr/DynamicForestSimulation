@@ -22,7 +22,7 @@ public class Main {
 	private static int smallLoggerSize;
 	static FileWriter fw = null;
 	static BufferedWriter bw = null;
-	private static String logdir = "C:\\Users\\amitaydr\\Desktop\\ProjectRepo\\DynamicForestSimulation\\logs\\";
+	public static String logdir = "C:\\Users\\amitaydr\\Desktop\\ProjectRepo\\DynamicForestSimulation\\logs\\";
 	private static boolean doLogAll = false;
 	private static boolean animateResult = false;
 	private static int bestScore;
@@ -126,7 +126,7 @@ public class Main {
 
 	}
 	
-	public static void main(String[] args) {
+	public static void mainSimulation() {
 		System.out.println("N="+size+" C="+C+" ChunkSize="+chunkSize+" iterations="+iterations);
 		initLog();
 		bestScore = 0;
@@ -167,6 +167,11 @@ public class Main {
 		if(animateResult) {
 			Plotter.plot(bestChunkLog, size, C);
 		}
+	}
+	
+	public static void main(String[] args) {
+		mainSimulation();
+//		Plotter.plotFromLogFile("bestChunk11_10_2017_16_42");
 	}
 
 

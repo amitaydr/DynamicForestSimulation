@@ -1,15 +1,19 @@
 package visualization;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import org.graphstream.graph.*;
 import org.graphstream.graph.implementations.*;
 import org.graphstream.ui.view.Viewer;
 
+import simulation.Main;
+
 
 public class Plotter {
 
-//	private static int minLengthForGraphPrint = 12;
 	static Graph g;
 	static MyNode[] myNodes;
 
@@ -35,6 +39,31 @@ public class Plotter {
 
 	}
 	
+	public static void plotFromLogFile(String filename){
+		LinkedList<String> logLst = new LinkedList<String>();
+		try {
+			filename = Main.logdir + filename + ".log";
+			FileReader fr = new FileReader(filename);
+			BufferedReader br = new BufferedReader(fr);
+			String firstLine = br.readLine();
+			int n = Integer.parseInt(firstLine.substring(firstLine.indexOf("N=")+2, firstLine.indexOf("C=")-1));
+			int c = Integer.parseInt(firstLine.substring(firstLine.indexOf("C=")+2, firstLine.indexOf("ChunkSize")-1));
+			String s = br.readLine();
+			while(s!=null){
+				logLst.add(s);
+				s = br.readLine();
+			}
+			br.close();
+			fr.close();
+			plot(logLst,n,c);
+			
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
 	public static void plot(LinkedList<String> logList, int n, int c){
 		g = new SingleGraph("tree1");
 		Viewer v = g.display();
@@ -52,12 +81,14 @@ public class Plotter {
 		v.disableAutoLayout();
 		while(!logList.isEmpty()){
 			currLog = logList.remove();
-			int[] tuple = getFirstTuple(currLog);
-			if(currLog.startsWith("+")){
-				myNodes[tuple[0]].AddNeighbor(myNodes[tuple[1]]);
-			}
-			else if(currLog.startsWith("-")){
-				myNodes[tuple[0]].RemoveNeighbor(myNodes[tuple[1]],true);
+			if(currLog.contains("(")){
+				int[] tuple = getFirstTuple(currLog);
+				if(currLog.startsWith("+")){
+					myNodes[tuple[0]].AddNeighbor(myNodes[tuple[1]]);
+				}
+				else if(currLog.startsWith("-")){
+					myNodes[tuple[0]].RemoveNeighbor(myNodes[tuple[1]],true);
+				}
 			}
 		}
 		
