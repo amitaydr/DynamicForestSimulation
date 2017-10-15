@@ -11,10 +11,10 @@ import visualization.Plotter;
 import dynamicGraph.Forest;
 
 public class Main {
-	private static int size = 20;
+	private static int size = 6;
 	private static int C = 2;
-	private static int chunkSize = 20;
-	private static long  iterations = 1000000000L;
+	private static int chunkSize = 6;
+	private static long  iterations = 10000000L;
 
 	
 	private static LinkedList<String> smallLogger;
@@ -22,7 +22,7 @@ public class Main {
 	private static int smallLoggerSize;
 	static FileWriter fw = null;
 	static BufferedWriter bw = null;
-	public static String logdir = "C:\\Users\\amitaydr\\Desktop\\ProjectRepo\\DynamicForestSimulation\\logs\\";
+	public static String logdir = "C:\\Users\\amitaydr\\Desktop\\ProjectRepo\\DynamicForestSimulation\\logs\\newSession3\\";
 	private static boolean doLogAll = false;
 	private static boolean animateResult = false;
 	private static int bestScore;
@@ -107,8 +107,11 @@ public class Main {
 	
 	public static void saveBestChunkLogToFile(){
 		String fileName = logdir
-				+ "bestChunk" + LocalDateTime.now().format(
-						DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm"))
+				+ "N=" + size 
+				+ "_C=" + C 
+				+ "_ChunckSize=" + chunkSize 
+				+ "_Iterations=" + iterations 
+				+ "Time=" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd_MM_yyyy_HH_mm"))
 				+ ".log";
 		try {
 			fw = new FileWriter(fileName);
@@ -169,8 +172,24 @@ public class Main {
 		}
 	}
 	
+	public static void cleanAll(){
+		smallLogger = null;
+		bestChunkLog = null;
+		fw = null;
+		bw = null;
+		bestScore = 0;
+	}
+	
 	public static void main(String[] args) {
-		mainSimulation();
+		
+		for(int i = 0;i<15;i++){
+			size = 6 + i;
+			chunkSize = 2*size;
+			mainSimulation();
+			iterations *= Math.pow(10.0, 1/7.0);
+			cleanAll();
+		}
+//		mainSimulation();
 //		Plotter.plotFromLogFile("bestChunk11_10_2017_16_42");
 	}
 
